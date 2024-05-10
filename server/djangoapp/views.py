@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 # Uncomment the required imports before adding the code
 
-from django.shortcuts import render
+# from django.shortcuts import render
 # from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 # from django.shortcuts import get_object_or_404, redirect
-# from django.contrib.auth import logout
+ from django.contrib.auth import logout
 # from django.contrib import messages
 # from datetime import datetime
 
@@ -94,9 +94,9 @@ def registration(request):
 
         user = User.objects.create_user(
             username=username,
-            first_name=first_name, 
+            first_name=first_name,
             last_name=last_name,
-            password=password, 
+            password=password,
             email=email
         )
 

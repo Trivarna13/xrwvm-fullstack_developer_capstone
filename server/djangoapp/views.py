@@ -3,12 +3,12 @@
 # Uncomment the required imports before adding the code
 
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse
+# from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404, render, redirect
-from django.contrib.auth import logout
-from django.contrib import messages
-from datetime import datetime
+# from django.shortcuts import get_object_or_404, redirect
+# from django.contrib.auth import logout
+# from django.contrib import messages
+# from datetime import datetime
 
 from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
@@ -80,7 +80,7 @@ def registration(request):
 
         User.objects.get(username=username)
         username_exist = True
-    except:
+    except Exception as e:
 
         # If not, simply log this is a new user
 
@@ -92,9 +92,13 @@ def registration(request):
 
         # Create user in auth_user table
 
-        user = User.objects.create_user(username=username,
-                first_name=first_name, last_name=last_name,
-                password=password, email=email)
+        user = User.objects.create_user(
+            username=username,
+            first_name=first_name, 
+            last_name=last_name,
+            password=password, 
+            email=email
+        )
 
         # Login the user and redirect to list page
 
@@ -119,11 +123,10 @@ def get_cars(request):
     return JsonResponse({'CarModels': cars})
 
 
-## Update the `get_dealerships` view to render the index page with
+# Update the `get_dealerships` view to render the index page with
 # a list of dealerships
 # def get_dealerships(request):
 # ...
-# Update the `get_dealerships` render list of dealerships all by default, particular state if state is passed
 
 @csrf_exempt
 def get_dealerships(request, state='All'):
@@ -148,8 +151,9 @@ def get_dealer_reviews(request, dealer_id):
         endpoint = '/fetchReviews/dealer/' + str(dealer_id)
         reviews = get_request(endpoint)
         for review_detail in reviews:
-            response = analyze_review_sentiments(review_detail['review'
-                    ])
+            response = analyze_review_sentiments(
+                review_detail['review']
+            )
             print(response)
             review_detail['sentiment'] = response['sentiment']
         return JsonResponse({'status': 200, 'reviews': reviews})
@@ -177,12 +181,13 @@ def get_dealer_details(request, dealer_id):
 
 @csrf_exempt
 def add_review(request):
-    if request.user.is_anonymous == False:
+    if request.user.is_anonymous is False:
         data = json.loads(request.body)
         try:
             response = post_review(data)
+            console.log(response)
             return JsonResponse({'status': 200})
-        except:
+        except Exception as e:
             return JsonResponse({'status': 401,
                                 'message': 'Error in posting review'})
     else:
